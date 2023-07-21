@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import time
-from pydantic_settings import BaseSettings
-import pandas_profiling
+# import pandas_profiling
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns

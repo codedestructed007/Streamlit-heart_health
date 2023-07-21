@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import time
+from pydantic_settings import BaseSettings
 import pandas_profiling
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -9,6 +10,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from streamlit_option_menu import option_menu
 from streamlit_pandas_profiling import st_profile_report
+from pydantic_settings import BaseSettings
 
 # Importing ends here --------------------------------------
 

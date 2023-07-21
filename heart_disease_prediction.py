@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import time
-
+import pandas_profiling
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns

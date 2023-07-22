@@ -8,8 +8,7 @@ import streamlit as st
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from streamlit_option_menu import option_menu
-from streamlit_pandas_profiling import st_profile_report
-from pydantic_settings import BaseSettings
+
 
 # Importing ends here --------------------------------------
 
@@ -29,7 +28,7 @@ st.set_page_config(
 )
 
 with st.sidebar:
-    selected_option = option_menu("Main Menu", ["Home", "Visualizaiton", "Report"],
+    selected_option = option_menu("Main Menu", ["Home", "Visualizaiton", "Data Overview"],
                                   icons=["house", "book", "file-text"], menu_icon="cast", default_index=0)
 
 
@@ -93,7 +92,7 @@ def scatterplot(x, y, hue, style, palette):
 
     # Get the current figure object
     fig = plt.gcf()
-    plt.title('Correlation between {x} and {y}')
+    plt.title('Correlation between {} and {}'.format(x,y))
     return fig
 
 
@@ -373,7 +372,7 @@ if selected_option == 'Visualizaiton':
                               kind, palette_colour, hue)
         st.pyplot(graph)
         st.markdown(text, unsafe_allow_html=True)
-if selected_option == 'Report':
+if selected_option == 'Data Overview':
     header_style = """
         <style>
         .header-container {
@@ -408,5 +407,300 @@ if selected_option == 'Report':
         unsafe_allow_html=True
     )
 
-    pr = df.profile_report()
-    st_profile_report(pr)
+    st.divider()
+    st.subheader('Number of rows')
+    st.code('len(df)')
+    st.write(len(df))
+    st.subheader('Number of columns')
+    st.code('len(df.columns)')
+    st.write(len(df.columns))
+    st.divider()
+    
+    #Missing values and their percentages
+    
+    st.subheader('Missing values in dataset')
+    missing_values = []
+    missing_values_perc = []
+    for column in df.columns:
+        missing_values = df[column].isna().sum()
+        missing_values_perc = (missing_values/len(df)) * 100
+        df_missing_val=pd.DataFrame({
+            'Missing_values' : missing_values,
+            'Missing_values(%)' : missing_values_perc
+        } ,index=df.columns)
+    
+    st.code("""
+            missing_values = []
+    missing_values_perc = []
+    for column in df.columns:
+        missing_values = df[column].isna().sum()
+        missing_values_perc = (missing_values/len(df)) * 100
+        df_missing_val=pd.DataFrame({
+            'Missing_values' : missing_values,
+            'Missing_values(%)' : missing_values_perc
+        } ,index=df.columns)
+            """)
+    st.code('df_missing_val')
+    st.dataframe(df_missing_val)
+    
+    st.divider()
+    
+    #duplicate rows
+    st.subheader('Duplicate rows')
+    st.dataframe(df.loc[df.duplicated()])
+    
+    st.divider()
+    
+    #dropping duplicate values
+    st.subheader('Shape(after removing duplicate)' )
+    st.code('df.drop_duplicates()')
+    
+    df = df.drop_duplicates()
+    st.write(df.shape)
+    
+    #Columns
+    st.subheader('Columns')
+    st.code('pd.DataFrame(df.columns)')
+    st.dataframe(pd.DataFrame(df.columns))
+    
+    #Describe
+    st.subheader('Overview')
+    st.code('df.describe()')
+    st.dataframe(df.describe())
+    st.divider()
+    
+    
+    #Number of unique values
+    st.subheader('Unique values')
+    def unique(dataset):
+        unique_values_dic = {}
+        columns = dataset.columns.to_list()
+        for column in columns:
+            unique_values =len(dataset[column].unique())
+            unique_values_dic[column] = unique_values
+        df_unique_values = pd.DataFrame([unique_values_dic],columns=columns).T
+        df_unique_values.columns = ['Valuecounts']
+        return df_unique_values
+    st.code("""
+    def unique(dataset):
+        unique_values_dic = {}
+        columns = dataset.columns.to_list()
+        for column in columns:
+            unique_values =len(dataset[column].unique())
+            unique_values_dic[column] = unique_values
+        df_unique_values = pd.DataFrame([unique_values_dic],columns=columns).T
+        df_unique_values.columns = ['Valuecounts']
+        return df_unique_values
+        """)
+    st.code('unique(df)')
+    st.dataframe(unique(df))
+    st.divider()
+    
+    
+    #Categorical Columns
+    st.subheader('Categorical columns')
+    df_unique = unique(df)
+    df_unique['Categorical'] = df_unique['Valuecounts'] < 10
+    st.code("""             #sepearte in categorical or noncategorical dataset
+
+            #creating object to store dataset
+            df_unique = unique(df)
+
+            #creating new column whether it is categorical or not
+            df_unique['Categorical'] = df_unique['Valuecounts'] < 10
+            df_unique
+            """)
+    st.dataframe(df_unique)
+    st.divider()
+    
+    
+    #Bar plot of categorical or non categorical columns(in lenght)
+    st.subheader('Bar plot(Categorical or Non-Categorical)')
+    st.code("""     def bar_category(dataframe):
+        categorical_count = dataframe['Categorical'].sum()
+        non_categorical_count = len(dataframe) - categorical_count
+
+        # Create the bar plot
+        plt.bar(['Categorical', 'Non-Categorical'], [categorical_count, non_categorical_count])
+        plt.xlabel('Column Type')
+        plt.ylabel('Count')
+        plt.title('Categorical vs. Non-Categorical Columns')
+        return plt
+            """)
+    st.code('bar_category(dataframe)')
+    def bar_category(dataframe):
+        categorical_count = dataframe['Categorical'].sum()
+        non_categorical_count = len(dataframe) - categorical_count
+
+        # Create the bar plot
+        plt.bar(['Categorical', 'Non-Categorical'], [categorical_count, non_categorical_count])
+        plt.xlabel('Column Type')
+        plt.ylabel('Count')
+        plt.title('Categorical vs. Non-Categorical Columns')
+        return plt
+    
+    st.pyplot(bar_category(df_unique))
+    
+    st.divider()
+    
+    #histplot
+    st.subheader('Histplot')
+    
+    st.code("""df.hist(figsize = (12,12))
+plt.show()
+            """)
+    df.hist(figsize = (12,12))
+    st.pyplot(plt)
+
+    st.divider()
+    
+    #Correlation
+    st.subheader('Correlation between columns')
+    df.corr()
+    st.code('df.corr()')
+    st.dataframe(df.corr())
+    
+    st.divider()
+    
+    #Correlation Heatmap
+    st.subheader('Correlation Heatmap')
+    st.code("""
+            corr_mat = df.corr().stack().reset_index(name="correlation")
+corr_mat""")
+    corr_mat = df.corr().stack().reset_index(name="correlation")
+    st.dataframe(corr_mat)
+    
+    
+    
+    def corr_heatmap():
+        corr_mat = df.corr().stack().reset_index(name="correlation")
+        g = sns.relplot(
+            data=corr_mat, x='level_0', y='level_1', hue='correlation', sizes=(200, 400), size='correlation',
+            size_norm=(0.4, 0.7)
+        )
+        # remove tick lines
+        plt.tick_params(left=False, bottom=False)
+        # remove the spines
+        g.despine(left=True, bottom=True)
+        plt.xticks(rotation=90)
+        plt.xlabel("Columns (X-axis)")
+        plt.ylabel("Columns (Y-axis)")
+        plt.title('Correlation among all the columns')
+        return g
+    st.code("""
+            def corr_heatmap():
+                corr_mat = df.corr().stack().reset_index(name="correlation")
+                g = sns.relplot(
+                    data=corr_mat, x='level_0', y='level_1', hue='correlation', sizes=(200, 400), size='correlation',
+                    size_norm=(0.4, 0.7)
+                )
+                # remove tick lines
+                plt.tick_params(left=False, bottom=False)
+                # remove the spines
+                g.despine(left=True, bottom=True)
+                plt.xticks(rotation=90)
+                plt.xlabel("Columns (X-axis)")
+                plt.ylabel("Columns (Y-axis)")
+                plt.title('Correlation among all the columns')
+                return g""")
+    st.code('corr_heatmap()')
+    st.pyplot(corr_heatmap())
+    
+    st.divider()
+    
+    #boxplot
+    st.subheader('box Plot')
+    def boxplot_single():
+        fig, axes = plt.subplots()
+
+        sns.boxplot(data=df, y='age', x='sex', ax=axes, hue='cp', notch=True)
+        plt.xlabel('sex')
+        plt.ylabel('age')
+        plt.title('Distribution of Health Attributes in Heart Disease')
+        return fig
+    st.code("""     def boxplot_single():
+        fig, axes = plt.subplots()
+
+        sns.boxplot(data=df, y='age', x='sex', ax=axes, hue='cp', notch=True)
+        plt.xlabel('sex')
+        plt.ylabel('age')
+        plt.title('Distribution of Health Attributes in Heart Disease')
+        return fig
+            """)
+    st.pyplot(boxplot_single())
+
+    st.divider()
+    
+    #scatter plot
+    st.subheader('Scatter plot')
+    def scatter_single():
+        fig, axes = plt.subplots()
+        sns.scatterplot(data = df, x='age', y = 'chol',hue= 'fbs',palette='muted')
+        plt.ylabel('chol')
+        plt.xlabel('age')
+        plt.title('cholestrol(chol) Vs age')
+        return fig
+    
+    st.code("""
+            def scatter_single():
+                fig, axes = plt.subplots()
+                sns.scatterplot(data = df, x='age', y = 'chol',hue= 'fbs',palette='muted')
+                plt.ylabel('chol')
+                plt.xlabel('age')
+                plt.title('cholestrol(chol) Vs age')
+                return fig
+            """)
+    st.code('scatter_single')
+    st.pyplot(scatter_single())
+
+    st.divider()
+    
+    #footer 
+    footer_style = """
+        <style>
+        .footer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: px;
+            background-color: black;
+            color: white;
+            font-family: "Helvetica Neue", sans-serif;
+            font-size: 20px;
+            border-top: 1px solid #ccc;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: space-between;
+            width: 300px;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: underline;
+            margin: 0 5px;
+        }
+        </style>
+        """
+
+    st.markdown(footer_style, unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div class="footer-container">
+            Goodbye! Thank you for visiting this Streamlit app.
+            <div class="footer-links">
+                <a class="footer-link" href="https://github.com/your_github_username">GitHub</a>
+                <a class="footer-link" href="https://your_website_link">Website</a>
+                <a class="footer-link" href="https://your_article_link">Article</a>
+                <a class="footer-link" href="https://www.linkedin.com/in/your_linkedin_username">LinkedIn</a>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+        

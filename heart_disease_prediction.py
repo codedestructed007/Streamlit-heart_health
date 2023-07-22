@@ -660,13 +660,14 @@ corr_mat""")
         <style>
         .footer-container {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: px;
+            padding: 10px;
             background-color: black;
             color: white;
             font-family: "Helvetica Neue", sans-serif;
-            font-size: 20px;
+            font-size: 14px;
             border-top: 1px solid #ccc;
             position: fixed;
             bottom: 0;
@@ -676,13 +677,17 @@ corr_mat""")
         .footer-links {
             display: flex;
             justify-content: space-between;
-            width: 300px;
+            width: 200px;
         }
 
         .footer-link {
             color: white;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer-link:hover {
             text-decoration: underline;
-            margin: 0 5px;
         }
         </style>
         """
@@ -691,16 +696,18 @@ corr_mat""")
     st.markdown(
         """
         <div class="footer-container">
-            Goodbye! Thank you for visiting this Streamlit app.
-            <div class="footer-links">
-                <a class="footer-link" href="https://github.com/your_github_username">GitHub</a>
-                <a class="footer-link" href="https://your_website_link">Website</a>
-                <a class="footer-link" href="https://your_article_link">Article</a>
-                <a class="footer-link" href="https://www.linkedin.com/in/your_linkedin_username">LinkedIn</a>
+            <div style="margin-bottom: 5px;">Goodbye! Thank you for visiting this Streamlit app.
+            <a class="footer-link" href="https://github.com/codedestructed007/Streamlit-heart_health.git">GitHub</a>
+            <a class="footer-link" href="https://www.linkedin.com/in/satyamsharma61541425b">LinkedIn</a>
             </div>
+            
+        
         </div>
         """,
         unsafe_allow_html=True
     )
+
+
+
 
         

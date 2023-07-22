@@ -124,7 +124,6 @@ if selected_option == 'Home':
             justify-content: space-between;
             align-items: center;
             padding: 10px;
-            background-color: black;
             border-bottom: 1px solid #ccc;
         }
 
@@ -132,7 +131,6 @@ if selected_option == 'Home':
             font-size: 24px;
             font-weight: bold;
             font-family: "Helvetica Neue", sans-serif;
-            color: white;
         }
         </style>
 """
@@ -150,7 +148,7 @@ if selected_option == 'Home':
     with left:
         st.markdown(
             """
-            <div style='background-color: black; padding: 20px; border-radius: 10px;'>
+            <div style='background-color: ; padding: 20px; border-radius: 10px;'>
                 <h4>About the Model &#128641; </h4>
                 <p>
                     This model predicts whether a patient has heart disease or not.
@@ -170,7 +168,7 @@ if selected_option == 'Home':
 
         st.markdown(
             """
- <div style='background-color: black; padding: 20px; border-radius: 10px;'>
+ <div style='background-color: ; padding: 20px; border-radius: 10px;'>
                 <h4>How Model works &#10067 </h4>
                 <p>
                     To make a prediction, please fill in the required fields on the right and click on the <b>Predict</b> button.                
@@ -183,7 +181,7 @@ if selected_option == 'Home':
         # Create a box to display the content
         st.markdown(
             f"""
-            <div style='background-color: black; padding: 20px; border-radius: 10px;'>
+            <div style='background-color: padding: 20px; border-radius: 10px;'>
                 <h4>About the Dataset &#128202;</h4>
                 <p>
                     This model, built using the Decision Tree classifier algorithm, predicts whether a patient has heart disease.
@@ -277,7 +275,7 @@ if selected_option == 'Visualizaiton':
             justify-content: space-between;
             align-items: center;
             padding: 10px;
-            background-color: black;
+
             border-bottom: 1px solid #ccc;
         }
 
@@ -285,7 +283,6 @@ if selected_option == 'Visualizaiton':
             font-size: 24px;
             font-weight: bold;
             font-family: "Helvetica Neue", sans-serif;
-            color: white;
         }
         .visualization-logo {
             width: 40px;
@@ -380,7 +377,6 @@ if selected_option == 'Data Overview':
             justify-content: space-between;
             align-items: center;
             padding: 10px;
-            background-color: black;
             border-bottom: 1px solid #ccc;
         }
 
@@ -388,7 +384,6 @@ if selected_option == 'Data Overview':
             font-size: 24px;
             font-weight: bold;
             font-family: "Helvetica Neue", sans-serif;
-            color: white;
         }
         .visualization-logo {
             width: 40px;

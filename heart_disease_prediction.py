@@ -400,7 +400,7 @@ if selected_option == 'Data Overview':
     st.markdown(
         """
         <div class="header-container">
-            <div class="title">Report\U0001F4CB..</div>
+            <div class="title">Data Overview\U0001F4CB..</div>
         
         </div>
             """,
